@@ -19,38 +19,17 @@ def main():
                 continue
 
 def login():
-    # username part
     while True:
-        found = False
         username = input("Username: ")
-        with open("plain_text.txt", "r") as file:
-            for line in enumerate(file):
-                if line[1].split(",")[0] == username:
-                    found = True
-                    position = line[0]
-                    break
-        
-        #flag thing should probably fix it coz its bad ish but it works
-        if found:
-            break
-        else:
-            print("username not found")
-    
-
-    #password part
-    while True:
-        found = False
         password = input("Password: ")
-        with open("plain_text.txt", "r") as file:            
-            #black magic but somehow i got the password from the text file
-            if line[1].split(",")[1].rstrip() == password:
-                found = True
-                break
+        with open("plain_text.txt", "r") as file:
+            for line in file:
+                stored_user, stored_pass = line.strip().split(",")
+                if stored_user == username and stored_pass == password:
+                    print("Logged in")
+                    return
+            print("Wrong username or password")
 
-        if found:
-            break
-        else:
-            print("wrong password")
 
 def logged_in():
     while True:
