@@ -1,11 +1,14 @@
 import sys
 import csv
+import bcrypt
+
+salt = b"$2b$12$ieYNkQp8QumgedUo30nuPO"
 
 # checklist:
 # csv
-# error handling (file doesnt exist)
+# ✔ error handling (file doesnt exist)
 # ✔ login logic
-# password change
+# ✔ password change
 # ✔ register edge cases
 
 
@@ -82,21 +85,31 @@ def register():
     with open("plain_text.txt", "a") as file:
         while True:
             password = input("Enter your password (> 4 characters and have a number): ")
-            if len(password) > 4 and password.isalnum():
+            if len(password) > 4 and any(char.isdigit() for char in password):
                 file.write(f"\n{username},{password}")
                 break
             else:
                 print("Password must be greater than 4 and have a number")
 
 def change_password(username):
-    print(username) # test
+    while True:
+        password = input("Enter your password (> 4 characters and have a number): ")
+        if len(password) > 4 and any(char.isdigit() for char in password):
+            break
+        else:
+            print("Password must be greater than 4 and have a number")
+
+    lines = []
     with open("plain_text.txt", "r") as file:
-        print("change password (not added)") # its here so it acutally runs
-        # pseudoing my code
-        # FOR line in file
-        #   if line.split(",")[0].rstrip() EQUALS username
-        #       line.replace(username) (⁉️)
-        
-        # uhh
+        for line in file:
+            stored_user, stored_pass = line.strip().split(",")
+            if stored_user == username:
+                lines.append(f"{username},{password}\n")
+            else:
+                lines.append(line)
+
+    with open("plain_text.txt", "w") as file:
+        for line in lines:
+            file.write(line)
 
 main()
