@@ -1,13 +1,31 @@
 import sys
 import csv
 
+# checklist:
+# csv
+# error handling (file doesnt exist)
+# ✔ login logic
+# password change
+# ✔ register edge cases
+
+
+
+
 def main():
+    # makes file if it doesnt exist
+    try:
+        with open("plain_text.txt", "r") as file:
+            pass
+    except FileNotFoundError:
+        with open("plain_text.txt", "w") as file:
+            pass
+    # it messes up because theres an empty line at the start if you register
+
     while True:
         choice = input("Login, Register or Quit? ").casefold()
         match choice:
             case "login":
                 login()
-                logged_in()
                 break
             case "register":
                 register()
@@ -27,16 +45,17 @@ def login():
                 stored_user, stored_pass = line.strip().split(",")
                 if stored_user == username and stored_pass == password:
                     print("Logged in")
+                    logged_in(username)
                     return
             print("Wrong username or password")
 
 
-def logged_in():
+def logged_in(username):
     while True:
         choice = input("Change password or logout? ").casefold()
         match choice:
             case "change password":
-                change_password()
+                change_password(username)
                 break
             case "logout":
                 print("Logged out")
@@ -55,18 +74,22 @@ def register():
             for line in file:
                 if line.split(",")[0].rstrip() == username:
                     print("Username already taken")
-                    taken = True
-                    continue
-            
-        if not taken:
-            break
+                    break
+            else:
+                break
 
-    # added it to the end
+    # add it to the end
     with open("plain_text.txt", "a") as file:
-        password = input("Enter your password: ")
-        file.write(f"\n{username},{password}")
+        while True:
+            password = input("Enter your password (> 4 characters and have a number): ")
+            if len(password) > 4 and password.isalnum():
+                file.write(f"\n{username},{password}")
+                break
+            else:
+                print("Password must be greater than 4 and have a number")
 
-def change_password():
+def change_password(username):
+    print(username) # test
     with open("plain_text.txt", "r") as file:
         print("change password (not added)") # its here so it acutally runs
         # pseudoing my code
